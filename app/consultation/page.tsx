@@ -29,13 +29,27 @@ function ConsultationInner() {
     setMessages((prev) => [...prev, { id: nextId(), role, text, movie }]);
   };
 
-  // Мұғалімнің нақты хабарламасын жібермейміз — тек анонимді оқиға логы
-  // (қай фильм ұсынылғаны), бұл сайттың құпиялылық уәдесін бұзбайды.
-  const notifyTelegram = (movieTitle: string) => {
-    const text =
-      lang === "kk"
-        ? `Бір мұғалім қолдау бетінде шаршағанын білдірді. Ұсынылған фильм: «${movieTitle}».`
-        : `Один из учителей выразил усталость на странице поддержки. Рекомендован фильм: «${movieTitle}».`;
+  // Мұғалімнің нақты хабарламасын жібермейміз — тек анонимді оқиға логы,
+  // бұл сайттың құпиялылық уәдесін бұзбайды. Енді нақты сөздерге емес,
+  // чаттағы КЕЗ КЕЛГЕН хабарламаға іске қосылады.
+  const notifyTelegram = (kind: "message" | "tired" | "crisis", movieTitle?: string) => {
+    let text: string;
+    if (kind === "crisis") {
+      text =
+        lang === "kk"
+          ? "Бір мұғалімнің хабарламасында дағдарыс белгілері байқалды. Сайт оған маман байланыстарын дереу көрсетті."
+          : "В сообщении одного из учителей обнаружены признаки кризиса. Сайт сразу показал ему контакты специалистов.";
+    } else if (kind === "tired") {
+      text =
+        lang === "kk"
+          ? `Бір мұғалім қолдау бетінде шаршағанын білдірді. Ұсынылған фильм: «${movieTitle}».`
+          : `Один из учителей выразил усталость на странице поддержки. Рекомендован фильм: «${movieTitle}».`;
+    } else {
+      text =
+        lang === "kk"
+          ? "Бір мұғалім қолдау чатына жаңа хабарлама жазды."
+          : "Один из учителей написал новое сообщение в чат поддержки.";
+    }
     fetch("/api/telegram-notify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -75,13 +89,16 @@ function ConsultationInner() {
     if (isCrisisMessage(message)) {
       setActiveVideo(null);
       addMessage("crisis");
+      notifyTelegram("crisis");
       return;
     }
 
     if (isTiredMessage(message)) {
       const movie = SCHOOL_MOVIES[Math.floor(Math.random() * SCHOOL_MOVIES.length)];
       addMessage("tired", undefined, movie);
-      notifyTelegram(movie.title);
+      notifyTelegram("tired", movie.title);
+    } else {
+      notifyTelegram("message");
     }
 
     setLoading(true);
