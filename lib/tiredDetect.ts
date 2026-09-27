@@ -5,7 +5,9 @@ import { normalize } from "@/lib/matchTopic";
 const TIRED_PATTERNS: string[] = [
   "шаршадым",
   "шаршап",
+  "шаршау",
   "күйіп кеттім",
+  "күйіп кету",
   "күйзелдім",
   "күшім жоқ",
   "әл-дәрменім жоқ",
