@@ -5,7 +5,9 @@ import { useSearchParams } from "next/navigation";
 import { useLang, useTranslation } from "@/lib/i18n";
 import { findTopicByKeywords, findTopicById } from "@/lib/matchTopic";
 import { isCrisisMessage } from "@/lib/crisisDetect";
+import { isTiredMessage } from "@/lib/tiredDetect";
 import { Topic } from "@/data/topics";
+import { SCHOOL_MOVIES, SchoolMovie } from "@/data/schoolMovies";
 import VideoPlayer from "@/components/VideoPlayer";
 import ChatPanel, { ChatMessage } from "@/components/ChatPanel";
 
@@ -23,8 +25,22 @@ function ConsultationInner() {
   const [loading, setLoading] = useState(false);
   const initialTopicHandled = useRef(false);
 
-  const addMessage = (role: ChatMessage["role"], text?: string) => {
-    setMessages((prev) => [...prev, { id: nextId(), role, text }]);
+  const addMessage = (role: ChatMessage["role"], text?: string, movie?: SchoolMovie) => {
+    setMessages((prev) => [...prev, { id: nextId(), role, text, movie }]);
+  };
+
+  // Мұғалімнің нақты хабарламасын жібермейміз — тек анонимді оқиға логы
+  // (қай фильм ұсынылғаны), бұл сайттың құпиялылық уәдесін бұзбайды.
+  const notifyTelegram = (movieTitle: string) => {
+    const text =
+      lang === "kk"
+        ? `Бір мұғалім қолдау бетінде шаршағанын білдірді. Ұсынылған фильм: «${movieTitle}».`
+        : `Один из учителей выразил усталость на странице поддержки. Рекомендован фильм: «${movieTitle}».`;
+    fetch("/api/telegram-notify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
+    }).catch(() => {});
   };
 
   const fetchGeneralAnswer = async (message: string): Promise<string> => {
@@ -60,6 +76,12 @@ function ConsultationInner() {
       setActiveVideo(null);
       addMessage("crisis");
       return;
+    }
+
+    if (isTiredMessage(message)) {
+      const movie = SCHOOL_MOVIES[Math.floor(Math.random() * SCHOOL_MOVIES.length)];
+      addMessage("tired", undefined, movie);
+      notifyTelegram(movie.title);
     }
 
     setLoading(true);

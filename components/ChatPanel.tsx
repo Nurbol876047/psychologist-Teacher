@@ -4,12 +4,15 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "@/lib/i18n";
 import { TOPICS } from "@/data/topics";
 import CrisisBanner from "@/components/CrisisBanner";
+import TiredSupportBanner from "@/components/TiredSupportBanner";
 import { useLang } from "@/lib/i18n";
+import { SchoolMovie } from "@/data/schoolMovies";
 
 export interface ChatMessage {
   id: string;
-  role: "user" | "assistant" | "crisis";
+  role: "user" | "assistant" | "crisis" | "tired";
   text?: string;
+  movie?: SchoolMovie;
 }
 
 interface ChatPanelProps {
@@ -153,6 +156,13 @@ export default function ChatPanel({ messages, loading, onSend }: ChatPanelProps)
             return (
               <div key={m.id} className="w-full">
                 <CrisisBanner />
+              </div>
+            );
+          }
+          if (m.role === "tired" && m.movie) {
+            return (
+              <div key={m.id} className="w-full">
+                <TiredSupportBanner movie={m.movie} />
               </div>
             );
           }
