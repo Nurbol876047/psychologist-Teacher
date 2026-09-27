@@ -21,7 +21,3 @@ npm-debug.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# large media (put your own videos/photo locally)
-/public/videos/*.mp4
-/public/psychologist.jpg
