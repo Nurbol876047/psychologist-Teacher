@@ -31,16 +31,20 @@ function buildCrisisReply(): string {
 }
 
 async function sendTelegramMessage(token: string, chatId: number, text: string) {
-  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+  const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ chat_id: chatId, text }),
   });
+  if (!res.ok) {
+    console.error("telegram-webhook: sendMessage failed", res.status, await res.text());
+  }
 }
 
 export async function POST(req: NextRequest) {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   if (!token) {
+    console.error("telegram-webhook: not configured (missing TELEGRAM_BOT_TOKEN)");
     return NextResponse.json({ error: "not_configured" }, { status: 500 });
   }
 
@@ -92,7 +96,8 @@ export async function POST(req: NextRequest) {
       completion.choices[0]?.message?.content?.trim() ||
       "Кешіріңіз, жауап дайындай алмадым. Қайталап жазыңызшы.";
     await sendTelegramMessage(token, chatId, reply);
-  } catch {
+  } catch (err) {
+    console.error("telegram-webhook: OpenAI request failed", err);
     await sendTelegramMessage(token, chatId, "Кешіріңіз, қате пайда болды. Сәлден соң қайталап көріңізші.");
   }
 
