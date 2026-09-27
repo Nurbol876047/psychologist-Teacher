@@ -22,7 +22,7 @@ interface ChatPanelProps {
 // оның орнына аудио жазып, серверде Whisper арқылы танимыз).
 function isVoiceCaptureSupported(): boolean {
   if (typeof window === "undefined") return false;
-  return !!(navigator.mediaDevices?.getUserMedia && (window as any).MediaRecorder);
+  return !!(navigator.mediaDevices && (window as any).MediaRecorder);
 }
 
 export default function ChatPanel({ messages, loading, onSend }: ChatPanelProps) {
