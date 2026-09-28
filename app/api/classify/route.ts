@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
       (t) => `${t.id}. ${t.title_kk} / ${t.title_ru} (ключевые слова: ${[...t.keywords_kk, ...t.keywords_ru].join(", ")})`
     ).join("\n");
 
-    const systemPrompt = `Ты классифицируешь сообщение учителя по одной из 10 тем психологической поддержки.
+    const systemPrompt = `Ты классифицируешь сообщение учителя по одной из ${TOPICS.length} тем психологической поддержки.
 Список тем:
 ${topicsList}
 

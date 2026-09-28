@@ -13,6 +13,7 @@ export default function Header() {
     { href: "/", label: t("nav_home") },
     { href: "/consultation", label: t("nav_consultation") },
     { href: "/mood", label: t("nav_mood") },
+    { href: "/test-check", label: t("nav_test_check") },
     { href: "/about", label: t("nav_about") },
   ];
 
