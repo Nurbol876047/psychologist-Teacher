@@ -74,7 +74,7 @@ export default function TestChecker() {
     setPreviewUrl(ALLOWED_IMAGE_TYPES.includes(selected.type) ? URL.createObjectURL(selected) : null);
   };
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = (e: React.DragEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setIsDragging(false);
     const dropped = e.dataTransfer.files?.[0];
