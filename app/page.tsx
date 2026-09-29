@@ -66,7 +66,7 @@ export default function HomePage() {
         {/* Цитата */}
         <section className="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-10 sm:pt-14">
           <div className="border-2 border-[#C9A96E] bg-panel rounded-card px-6 py-8 sm:px-12 sm:py-10 text-center">
-            <p className="text-xl sm:text-2xl font-medium italic text-primary leading-snug">
+            <p className="text-xl sm:text-2xl font-medium italic text-primary leading-snug whitespace-pre-line">
               &laquo;{LECTURE_QUOTE[lang]}&raquo;
             </p>
           </div>

@@ -15,6 +15,24 @@ function nextId() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
+const TIRED_MOVIE_INDEX_KEY = "tiredMovieIndex";
+
+function getNextTiredMovie(): SchoolMovie {
+  let index = 0;
+  try {
+    index = Number(window.localStorage.getItem(TIRED_MOVIE_INDEX_KEY)) || 0;
+  } catch {
+    index = 0;
+  }
+  const movie = SCHOOL_MOVIES[index % SCHOOL_MOVIES.length];
+  try {
+    window.localStorage.setItem(TIRED_MOVIE_INDEX_KEY, String(index + 1));
+  } catch {
+    // localStorage болмаса (жеке шолу режимі), тек ретсіз таңдаумен жалғастырамыз
+  }
+  return movie;
+}
+
 function ConsultationInner() {
   const { t } = useTranslation();
   const { lang } = useLang();
@@ -94,7 +112,7 @@ function ConsultationInner() {
     }
 
     if (isTiredMessage(message)) {
-      const movie = SCHOOL_MOVIES[Math.floor(Math.random() * SCHOOL_MOVIES.length)];
+      const movie = getNextTiredMovie();
       addMessage("tired", undefined, movie);
       notifyTelegram("tired", movie.title);
     } else {

@@ -101,7 +101,7 @@ export const DICT: Dict = {
 
   psychologist_alt: { kk: "Психолог", ru: "Психолог" },
   psychologist_name: { kk: "Әділбек Қыздарбеков", ru: "Әділбек Қыздарбеков" },
-  psychologist_role: { kk: "Мектеп психологы", ru: "Школьный психолог" },
+  psychologist_role: { kk: "Тарих пәні мұғалімі", ru: "Учитель истории" },
 
   why_eyebrow: { kk: "НЕГЕ БҰЛ МАҢЫЗДЫ", ru: "ПОЧЕМУ ЭТО ВАЖНО" },
   why_title: {
